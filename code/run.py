@@ -17,16 +17,41 @@ locations = [ab, oe, gz, nd, mf]
 
 for loc in locations:
     print(f"From {loc.initial} to {loc.goal}:")
-    print("  BFS:", search.breadth_first_graph_search(loc).path())
-    print("    Path Cost:", search.breadth_first_graph_search(loc).path_cost)
-    print("  DFS:", search.depth_first_graph_search(loc).path())
-    print("    Path Cost:", search.depth_first_graph_search(loc).path_cost)
+    
+    result_bfs = search.breadth_first_graph_search(loc)
+    print("  BFS:", result_bfs.path())
+    print("    Path Cost:", result_bfs.path_cost)
+    print("    Generated Nodes:", loc.generated)
+    print("    Visited Nodes:", loc.visited)
+    print()
+
+    loc.generated = 0
+    loc.visited = 0
+    result_dfs = search.depth_first_graph_search(loc)
+    print("  DFS:", result_dfs.path())
+    print("    Path Cost:", result_dfs.path_cost)
+    print("    Generated Nodes:", loc.generated)
+    print("    Visited Nodes:", loc.visited)
+    print()
+
+    loc.generated = 0
+    loc.visited = 0
+    result_bb = search.branch_and_bound(loc)
+    print("  Branch and Bound:", result_bb.path())
+    print("    Path Cost:", result_bb.path_cost)
+    print("    Generated Nodes:", loc.generated)
+    print("    Visited Nodes:", loc.visited)
+    print()
+
+    loc.generated = 0
+    loc.visited = 0
+    result_bb_h = search.branch_and_bound(loc, use_estimation=True)
+    print("  Branch and Bound with estimation:", result_bb_h.path())
+    print("    Path Cost:", result_bb_h.path_cost)
+    print("    Generated Nodes:", loc.generated)
+    print("    Visited Nodes:", loc.visited)
     print("------------------------------------------------------------")
 
-# TODO:
-# Añadir nodos visitados y nodos generados en cada búsqueda
-# Añadir branch and bound search
-# añadir subestimación+
 
 
 # Result:

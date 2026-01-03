@@ -98,14 +98,20 @@ def graph_search(problem, fringe):
     The argument fringe should be an empty queue.
     If two paths reach a state, only use the best one. [Fig. 3.18]"""
     closed = {}
+    problem.generated = 1
+    problem.visited = 0
+
     fringe.append(Node(problem.initial))
     while fringe:
         node = fringe.pop()
+        problem.visited += 1
         if problem.goal_test(node.state):
             return node
         if node.state not in closed:
             closed[node.state] = True
-            fringe.extend(node.expand(problem))
+            children = node.expand(problem)
+            fringe.extend(children)
+            problem.generated += len(children)
     return None
 
 
@@ -119,6 +125,46 @@ def depth_first_graph_search(problem):
     return graph_search(problem, Stack())
 
 
+# ______________________________________________________________________________
+## Informed Search algorithms (And Branch and Bound)
+
+def branch_and_bound(problem, use_estimation=False):
+    """Branch and Bound search.
+    use_estimation: if True, f = path_cost + heuristic"""
+
+    best_solution = None
+    best_cost = float('inf')
+    problem.generated = 1
+    problem.visited = 0
+
+    if use_estimation:
+        f_func = lambda node: node.path_cost + problem.h(node)
+    else:
+        f_func = lambda node: node.path_cost
+
+    fringe = OrderedQueue(f=f_func)
+    fringe.append(Node(problem.initial))
+    closed = {}
+
+    while fringe:
+        node = fringe.pop()
+        problem.visited += 1
+        
+        if f_func(node) >= best_cost:
+            continue
+
+        if problem.goal_test(node.state):
+            best_solution = node
+            best_cost = node.path_cost
+            break
+
+        for child in node.expand(problem):
+            problem.generated += 1
+            if child.state not in closed or child.path_cost < closed.get(child.state, float('inf')):
+                closed[child.state] = child.path_cost
+                fringe.append(child)
+
+    return best_solution
 
 # _____________________________________________________________________________
 # The remainder of this file implements examples for the search algorithms.

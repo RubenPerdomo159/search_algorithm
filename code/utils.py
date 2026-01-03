@@ -1,4 +1,4 @@
-
+import math
 #______________________________________________________________________________
 # Simple Data Structures: infinity, Dict, Struct
 
@@ -543,6 +543,26 @@ class FIFOQueue(Queue):
             self.start = 0
         return e
 
+class OrderedQueue(Queue):
+    """Queue that always pops the element with minimum f."""
+
+    def __init__(self, f=lambda x: x):
+        self.A = []
+        self.f = f
+
+    def append(self, item):
+        self.A.append(item)
+
+    def extend(self, items):
+        self.A.extend(items)
+
+    def __len__(self):
+        return len(self.A)
+
+    def pop(self):
+        best = min(self.A, key=self.f)
+        self.A.remove(best)
+        return best
 
 
 ## Fig: The idea is we can define things like Fig[3,10] later.
