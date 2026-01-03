@@ -153,7 +153,6 @@ def branch_and_bound(problem, use_estimation=False):
 
         if node.state not in closed:
             closed.add(node.state)
-
             for child in node.expand(problem):
                 fringe.append(child)
                 problem.generated += 1                
