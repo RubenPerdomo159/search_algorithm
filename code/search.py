@@ -132,8 +132,6 @@ def branch_and_bound(problem, use_estimation=False):
     """Branch and Bound search.
     use_estimation: if True, f = path_cost + heuristic"""
 
-    best_solution = None
-    best_cost = float('inf')
     problem.generated = 1
     problem.visited = 0
 
@@ -144,27 +142,23 @@ def branch_and_bound(problem, use_estimation=False):
 
     fringe = OrderedQueue(f=f_func)
     fringe.append(Node(problem.initial))
-    closed = {}
+    closed = set()
 
     while fringe:
-        node = fringe.pop()
         problem.visited += 1
-        
-        if f_func(node) >= best_cost:
-            continue
+        node = fringe.pop()
 
         if problem.goal_test(node.state):
-            best_solution = node
-            best_cost = node.path_cost
-            break
+            return node
 
-        for child in node.expand(problem):
-            problem.generated += 1
-            if child.state not in closed or child.path_cost < closed.get(child.state, float('inf')):
-                closed[child.state] = child.path_cost
+        if node.state not in closed:
+            closed.add(node.state)
+
+            for child in node.expand(problem):
                 fringe.append(child)
+                problem.generated += 1                
 
-    return best_solution
+    return None 
 
 # _____________________________________________________________________________
 # The remainder of this file implements examples for the search algorithms.
